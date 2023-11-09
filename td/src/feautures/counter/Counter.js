@@ -1,8 +1,15 @@
 import React, { useRef, useState } from "react";
 import { connect } from "react-redux";
 import { useSelector,useDispatch } from "react-redux";
-import {updateTodos, addTodos } from "./counterslice";
+import { updateTodos, addTodos } from "./counterslice";
 import { current } from "@reduxjs/toolkit";
+import InputGroup from 'react-bootstrap/InputGroup';
+import Button from 'react-bootstrap/Button';
+import Form from 'react-bootstrap/Form';
+import FloatingLabel from 'react-bootstrap/FloatingLabel';
+import ListGroup from 'react-bootstrap/ListGroup';
+import Row from 'react-bootstrap/Row';
+import './conter.css'
 
 const mapStateToProps=(state)=>{
     return{
@@ -30,6 +37,10 @@ if(e.which===13){
 }
 
 }
+const dragStarted=(e,id)=>{
+    e.dataTransfer.setData('todo',id)
+
+}
 const handleChange=(e)=>{
     setTodo(e.target.value)
       
@@ -37,26 +48,44 @@ const handleChange=(e)=>{
 console.log(props) 
 
 return(
-<div>
+<div className="Md-1"> 
+    <InputGroup size="sm" className="mb-3">
     <input type="text"  onChange={(e)=>handleChange(e)}/>
-    <button onClick={()=>props.addTodo({
+    <Button variant="outline-secondary" id="button-addon1" onClick={()=>props.addTodo({
         id:Math.floor(Math.random()*1000),
         item:todo,
         completed:false
-    })}>Add</button>
+    })}>Add</Button>
+    </InputGroup>
     <br/>
-    <ul>
+    
         {props.todos.map((item)=>{
-            return<li key={item.id}>
-                
-            <textarea ref={inputRef} disabled={inputRef} defaultValue={item.item} 
+            return<Form draggable onDragStart={(e)=>dragStarted(e,props.todo)} className="mb-3">
+                <Row className="mb-3" >
+                <Form.Group >
+                  <FloatingLabel
+        controlId="floatingTextarea"
+        
+        className="mb-3"
+        key={item.id}
+      />  
+                 <Form.Control  style={{ height: '50px' ,width:'200px'}} as="textarea" placeholder="Leave a comment here" 
+           ref={inputRef} disabled={inputRef} defaultValue={item.item} 
             onKeyDown={(e)=>update(item.id,inputRef.current.value,e)}/>
-                
-            <button onClick={()=>changeFocus()}>Edit</button></li>
+            
+          
+              
+            </Form.Group>
+            <Form.Group>
+            <Button    className="mb-3 btn-sm float-start" variant="dark"id="button-addon1" onClick={()=>changeFocus()}>Edit</Button>
+            </Form.Group>
+            </Row>
+
+            </Form>
         })
 
         }
-    </ul>
+    
 
 </div>
 )}

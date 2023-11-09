@@ -22,6 +22,10 @@ export const counterslice=createSlice({
                 }
                 return todo
             })
+        },
+        add:(state,action)=>{
+            state.push(action.payload)
+            return state;
         }
         
 
