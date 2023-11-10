@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { connect } from "react-redux";
 import { useSelector,useDispatch } from "react-redux";
 import { updateTodos, addTodos } from "./counterslice";
@@ -37,15 +37,28 @@ if(e.which===13){
 }
 
 }
-const dragStarted=(e,id)=>{
-    e.dataTransfer.setData('todo',id)
-
+const dragStarted=(e,props,item)=>{
+    e.dataTransfer.setData('todos',props)
+    console.log(e.dataTransfer.setData('todos',item))
+ console.log(props)
 }
 const handleChange=(e)=>{
     setTodo(e.target.value)
       
 }
 console.log(props) 
+
+useEffect(()=>{
+    const tr=window.localStorage.getItem('todos')
+   
+},[])
+
+
+
+useEffect(()=>{
+    localStorage.setItem("todos",JSON.stringify(props))
+},[props])
+
 
 return(
 <div className="Md-1"> 
@@ -60,7 +73,7 @@ return(
     <br/>
     
         {props.todos.map((item)=>{
-            return<Form draggable onDragStart={(e)=>dragStarted(e,props.todo)} className="mb-3">
+            return<Form draggable onDragStart={(e)=>dragStarted(e,props.todos)} className="mb-3">
                 <Row className="mb-3" >
                 <Form.Group >
                   <FloatingLabel

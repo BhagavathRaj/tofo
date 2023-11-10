@@ -7,6 +7,7 @@ export const counterslice=createSlice({
     name:"todos",
     initialState,
     reducers:{
+        
        
         addTodos:(state,action)=>{
             state.push(action.payload);
@@ -30,7 +31,9 @@ export const counterslice=createSlice({
         
 
     }
+    
 })
+
 export const {updateTodos,addTodos}=counterslice.actions
 
 export  default  counterslice.reducer
