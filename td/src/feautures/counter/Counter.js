@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useReducer, useRef, useState } from "react";
 import { connect } from "react-redux";
 import { useSelector,useDispatch } from "react-redux";
 import { updateTodos, addTodos } from "./counterslice";
@@ -16,14 +16,16 @@ const mapStateToProps=(state)=>{
         todos:state,
     }
 }
+
 const mapDispatchToProps=(dispatch)=>{
     return{
         addTodo:(obj)=>dispatch(addTodos(obj)),
         updaTodo:(obj)=>dispatch(updateTodos(obj))
     }
 }
-const Counter=(props)=>{
 
+const Counter=(props)=>{
+    
 const[todo,setTodo]=useState("")
 const inputRef=useRef(true);
 const changeFocus=()=>{
@@ -38,8 +40,8 @@ if(e.which===13){
 
 }
 const dragStarted=(e,props,item)=>{
-    e.dataTransfer.setData('todos',props)
-    console.log(e.dataTransfer.setData('todos',item))
+    e.dataTransfer.setData('todos',JSON.stringify(props))
+    
  console.log(props)
 }
 const handleChange=(e)=>{
@@ -48,16 +50,26 @@ const handleChange=(e)=>{
 }
 console.log(props) 
 
-useEffect(()=>{
-    const tr=window.localStorage.getItem('todos')
+// useEffect(()=>{
+//     const tr=window.localStorage.getItem('todos')
    
-},[])
+// },[])
 
 
 
-useEffect(()=>{
-    localStorage.setItem("todos",JSON.stringify(props))
-},[props])
+// useEffect(()=>{
+//     localStorage.setItem("todos",JSON.stringify(props))
+// },[props])
+  useEffect(() => {
+        const savedTodos = JSON.parse(window.localStorage.getItem('todos'));
+        if (savedTodos) {
+            props.addTodo(savedTodos);
+        }
+    }, [props.addTodo]);
+
+    useEffect(() => {
+        window.localStorage.setItem("todos", JSON.stringify(props.todos));
+    }, [props.todos]);
 
 
 return(
@@ -73,7 +85,7 @@ return(
     <br/>
     
         {props.todos.map((item)=>{
-            return<Form draggable onDragStart={(e)=>dragStarted(e,props.todos)} className="mb-3">
+            return<Form key={item.id} draggable onDragStart={(e)=>dragStarted(e,props.todos)} className="mb-3">
                 <Row className="mb-3" >
                 <Form.Group >
                   <FloatingLabel
